@@ -1,4 +1,4 @@
-x = view_wport [0] / 2
-y = view_hport [0] / 2
 visible =  false
-
+flag_define = 0
+switch_subim = 1
+subim = 0

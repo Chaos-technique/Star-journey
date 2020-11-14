@@ -1,7 +1,8 @@
 if IA == 0
 {get_input()}
-///IA de combat
+///IA
 if IA == 1
 {Ia_1()}
+
 
 vaisseau_mvt()

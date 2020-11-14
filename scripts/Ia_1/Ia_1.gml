@@ -1,122 +1,113 @@
-press_d = 0
-press_q = 0
-press_z = 0
-press_e = 0
-press_up = 0
-press_left = 0
-press_right = 0
-press_space = 0
-press_escape = 0
+function Ia_1() {
+	press_d = 0
+	press_q = 0
+	press_z = 0
+	press_s = 0
+	press_e = 0
+	press_up = 0
+	press_left = 0
+	press_right = 0
+	press_space = 0
+	press_escape = 0
+	direction_vis = 0
+
+	if i3 == noone
+	{i3 = 0}
+
+	
+	var atk;
+	atk = instance_place(x, y, oLaser);
+	if atk != noone
+	{if (Faction == 0 or atk.parent.Faction != Faction) and atk.parent != id and mode != 0
+	{ene = atk.parent
+	mode = 2}}
+
+	scan = instance_find(oPerso,i3)
+
+	if Faction == 1 and mode != 2
+	{if distance_to_object(scan) < 1000
+		{if scan.Faction == 2
+			{ene = scan
+			mode = 2}
+	}
+	}
+	if Faction == 2 and mode != 2
+	{if distance_to_object(scan) < 1000
+		{if scan.Faction == 1
+			{ene = scan
+			mode = 2}
+	}
+	}
+
+	///à améliorer pour que les vaisseau reste à coté
+
+	if scan != noone and Faction != 0 and mode == 1 and vaisseau_type != 5
+	{
+	if (scan.vaisseau_type == 5 or scan.vaisseau_type == 7) and Faction == scan.Faction and distance_to_object(scan) < 1000 and dice() >= 7
+		{desti = scan
+		angle_escort = irandom_range(0,360)
+		mode = 3
+		alarm[5] = 20000
+		with (desti)
+		{if ds_list_empty(escort_list)
+			{ds_list_add(escort_list,other.id)}
+		else
+			{escort_list = ds_list_create()
+			ds_list_add(escort_list,id,other.id)}}
+		}
+	}
 
 
-var atk;
-atk = instance_place(x, y, oLaser);
-if atk != noone and atk.parent != id
-   {ene = atk.parent
-	combat = 1
-	cruise = 0}
+	trajectoire = point_direction(x,y,v_x,v_y) - 90
+	diff_traj = trajectoire - image_angle
+	if trajectoire - image_angle > 180
+		{diff_traj = trajectoire - image_angle - 360}
+	if trajectoire - image_angle  < -180
+		{diff_traj = trajectoire - image_angle + 360}
 
-trajectoire = point_direction(x,y,v_x,v_y) - 90
-diff_traj = trajectoire - image_angle
-if trajectoire - image_angle > 180
-	{diff_traj = trajectoire - image_angle - 360}
-if trajectoire - image_angle  < -180
-	{diff_traj = trajectoire - image_angle + 360}
+	if mode == 2
+	{Ia_combat()}
+	
+	if mode == 1
+	{Ia_cruise()}
 
-if combat
-{
-
-if (distance_to_object(ene) > 200)
+	if mode == 0
+	{direction_vis = 0}
+	
+	if mode == 3
+	{if distance_to_point(desti.x + 700*cos(degtorad(angle_escort)),desti.y + 700*sin(degtorad(angle_escort))) < 40
+	{press_z = 0}
+	else
 	{press_z = 1}
-else
-	{press_z = false}
-direction_vis = point_direction(x,y,ene.x - (ene.v_x*distance_to_object(ene))/v_laser,ene.y  - (ene.v_y*distance_to_object(ene))/v_laser) - 90
-ene_vis = direction_vis - ene.turret_angle
-if direction_vis - ene.turret_angle > 180
-	{ene_vis = direction_vis - ene.turret_angle - 360}
-if ene_vis = direction_vis - ene.turret_angle < -180
-	{ene_vis = direction_vis - ene.turret_angle + 360}
+	direction_vis = point_direction(x,y,desti.x + 700*cos(degtorad(angle_escort)),desti.y+ 700*sin(degtorad(angle_escort))) - 90
+	}
 
-if ene.dead == 1
-{combat = 0
-cruise = 1}
+	diff_vis = direction_vis - image_angle
+	if direction_vis - image_angle > 180
+		{diff_vis = direction_vis - image_angle - 360}
+	if direction_vis - image_angle < -180
+		{diff_vis = direction_vis - image_angle + 360}
 
-if turret_mode == 0
-{if (ene_vis <= 0 and ene_vis >= -360) or (ene_vis > 180 and ene_vis < 360)
-	{press_left = 0
-	press_right = 1}
-else
-	{press_left = 1
-	press_right = 0}
-show_debug_message(diff_vis)
 
-if (diff_vis < 15 and diff_vis > -15 and distance_to_object(ene) < v_laser*laser_vie + 200) or distance_to_object(ene) < 300
-{press_space = 1}
-else
-{press_space = 0}
-}
+	if (diff_vis <= 0 and diff_vis >= -360) or (diff_vis > 180 and diff_vis < 360)
+		{press_d = 1
+		press_q = 0}
+	else
+		{press_d = 0
+		press_q = 1}
 
-else
-{diff_vis_turret = direction_vis - turret_angle
-if direction_vis - turret_angle > 180
-	{diff_vis_turret = direction_vis - turret_angle - 360}
-if direction_vis - turret_angle < -180
-	{diff_vis_turret = direction_vis - turret_angle + 360}
+	if direction_vis < image_angle + 10 && direction_vis > image_angle - 10
+		{press_d = 0
+		press_q = 0}
 
-if (diff_vis_turret <= 0 and diff_vis_turret >= -360) or (diff_vis_turret > 180 and diff_vis_turret < 360)
-	{press_left = 0
-	press_right = 1}
-else
-	{press_left = 1
-	press_right = 0}
+	///Strat
+	if ds_exists(escort_list,ds_type_list)
+	{///show_debug_message(escort_list)
+		}
 
-if direction_vis < image_angle + 10 && direction_vis > image_angle - 10
-	{press_left = 0
-	press_right = 0}
-}
+	i3 +=1
+	if i3 > instance_number(oPerso)
+	{i3 = 0}
+
 
 }
-if cruise
-{press_space = 0
-if distance_to_point(desti.x,desti.y) < 100
-{desti = oControl.planet[random_range(0,instance_number(oPlanet))]}
-direction_vis = point_direction(x,y,desti.x,desti.y) - 90
-
-if turret_mode ==0
-{if (diff_traj<= 0 and diff_traj >= -360) or (diff_traj > 180 and diff_traj < 360)
-	{press_right = 1
-	press_left = 0}
-else
-	{press_right = 0
-	press_left = 1}
-
-if diff_traj < image_angle + 10 && diff_traj > image_angle - 10
-	{press_right = 0
-	press_left = 0}}
-
-if distance_to_point(desti.x,desti.y) < 400 and v > 10
-{press_z = 0}
-else
-{press_z = 1}
-}
-
-if cruise == 0 and combat == 0
-{direction_vis = 0}
-
-diff_vis = direction_vis - image_angle
-if direction_vis - image_angle > 180
-	{diff_vis = direction_vis - image_angle - 360}
-if direction_vis - image_angle < -180
-	{diff_vis = direction_vis - image_angle + 360}
-
-
-if (diff_vis <= 0 and diff_vis >= -360) or (diff_vis > 180 and diff_vis < 360)
-	{press_d = 1
-	press_q = 0}
-else
-	{press_d = 0
-	press_q = 1}
-
-if direction_vis < image_angle + 10 && direction_vis > image_angle - 10
-	{press_d = 0
-	press_q = 0}

@@ -1,5 +1,8 @@
-x = oPerso.x
-y = oPerso.y
+if flag_define
+{flag_xmap += rel.v_x/50
+flag_ymap += rel.v_y/50}
 
-if (oPlanet.x-oPerso.x)/100< 4000 && (oPlanet.x-oPerso.x)/100 > -4000 && (oPlanet.y-oPerso.y)/100 < 4000 && (oPlanet.y-oPerso.y)/100  > -4000
-{}
+if switch_subim
+{alarm[0] = 20
+switch_subim =0}
+subim = subim mod 4

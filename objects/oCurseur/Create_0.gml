@@ -1,2 +1,2 @@
-cursor_sprite = sCurseur;
-window_set_cursor (cr_none)
+cursor_sprite = sFlag;
+window_set_cursor(cr_none)

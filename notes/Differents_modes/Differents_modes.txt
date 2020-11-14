@@ -1,0 +1,4 @@
+0-idle
+1-cruise
+2-combat
+3-escort
