@@ -3,7 +3,7 @@ if room == room0
 {with (instance_create_layer(0,0,"vaisseau",oPerso))
 {IA = 1
 vaisseau_type = irandom_range(2,6)
-Faction = irandom_range(0,1)
+Faction = irandom_range(0,2)
 x = irandom_range(-15000,15000)
 y = irandom_range(-15000,15000)
 event_user(0)}

@@ -20,6 +20,8 @@ zoom = 50
 decal = 7
 dice_cd = 1
 escort_list = ds_list_create()
+///list = ds_list_create()
+stop_press_space = 0
 
 pilot_mode = 0
 press_left = 0

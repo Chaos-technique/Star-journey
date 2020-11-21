@@ -14,6 +14,12 @@ function Ia_1() {
 	if i3 == noone
 	{i3 = 0}
 
+	if Faction == 0
+	{Faction_ene = noone}
+	if Faction == 1
+	{Faction_ene = 2}
+	if Faction == 2
+	{Faction_ene = 1}
 	
 	var atk;
 	atk = instance_place(x, y, oLaser);
@@ -23,6 +29,7 @@ function Ia_1() {
 	mode = 2}}
 
 	scan = instance_find(oPerso,i3)
+	
 
 	if Faction == 1 and mode != 2
 	{if distance_to_object(scan) < 1000
@@ -108,6 +115,5 @@ function Ia_1() {
 	i3 +=1
 	if i3 > instance_number(oPerso)
 	{i3 = 0}
-
 
 }
